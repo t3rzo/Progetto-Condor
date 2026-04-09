@@ -1,0 +1,478 @@
+/* --- CONFIGURAZIONE COLORI PREMIUM --- */
+:root {
+    --bg-dark: #0f0f0f;         /* Nero opaco di fondo */
+    --panel-dark: #181818;      /* Grigio molto scuro per le schede */
+    --accent-red: #c62828;      /* Rosso Condor scuro/elegante */
+    --text-white: #ffffff;
+    --text-gray: #a0a0a0;
+    --border-color: #333333;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-dark);
+    /* Sfondo geometrico sottile e professionale */
+    background-image: radial-gradient(circle at top right, #222 0%, transparent 40%);
+    color: var(--text-white);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- HEADER "BUSINESS STANDARD" (Logo SX - Menu DX) --- */
+.main-header {
+    background: rgba(15, 15, 15, 0.95); /* Quasi opaco */
+    height: 70px; /* Molto compatto */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%; /* Spazio ai lati */
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    backdrop-filter: blur(10px); /* Effetto sfocato dietro */
+}
+
+/* --- TRASFORMAZIONE LOGO --- */
+.logo-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.logo-container img {
+    /* 1. RIDUZIONE: Più è piccolo, più è definito (niente sgranature) */
+    height: 50px; 
+    width: auto;
+    
+    /* 2. MAGIA DEI COLORI: */
+    /* Rende l'immagine completamente BIANCA */
+    filter: brightness(0) invert(1) drop-shadow(0 0 1px rgba(255,255,255,0.5));
+    
+    opacity: 0.9;
+    transition: all 0.3s ease;
+}
+
+/* Effetto al passaggio del mouse */
+.logo-container img:hover {
+    transform: scale(1.1);
+    opacity: 1;
+    /* Al passaggio del mouse, aggiunge un bagliore ROSSO */
+    filter: brightness(0) invert(1) drop-shadow(0 0 8px #d32f2f);
+}
+
+/* NAVIGAZIONE PULITA */
+.nav-links {
+    display: flex;
+    gap: 30px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: var(--text-gray);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s, text-shadow 0.3s;
+    position: relative;
+}
+
+/* Hover elegante: diventa bianco con linea rossa */
+.nav-links a:hover {
+    color: var(--text-white);
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0%;
+    height: 2px;
+    background-color: var(--accent-red);
+    transition: width 0.3s ease;
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+
+/* --- LAYOUT CENTRALE ANIMATO --- */
+.page-content {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 20px;
+}
+
+/* Animazione di entrata dal basso */
+@keyframes slideUpFade {
+    0% { opacity: 0; transform: translateY(30px); }
+    100% { opacity: 1; transform: translateY(0); }
+}
+
+.form-container {
+    background-color: var(--panel-dark);
+    width: 100%;
+    max-width: 450px;
+    padding: 40px;
+    border-radius: 8px; /* Angoli poco arrotondati = più professionale */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6); /* Ombra profonda */
+    animation: slideUpFade 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; /* Movimento fluido */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Linea rossa decorativa in alto */
+.form-container::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent-red), transparent);
+}
+
+.form-container.wide {
+    max-width: 800px; /* Per la registrazione */
+}
+
+h2 {
+    color: var(--text-white);
+    margin-bottom: 30px;
+    font-weight: 300; /* Font sottile = eleganza */
+    font-size: 1.6rem;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* --- INPUT FIELDS MODERNI --- */
+.input-group-row {
+    display: flex;
+    gap: 20px;
+}
+
+.input-wrapper {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+label {
+    display: block;
+    color: var(--text-gray);
+    font-size: 0.75rem;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="date"] {
+    width: 100%;
+    background-color: #0a0a0a;
+    border: 1px solid var(--border-color);
+    color: white;
+    padding: 14px;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+/* Focus: Bordo rosso sottile */
+input:focus {
+    border-color: var(--accent-red);
+    background-color: #111;
+}
+
+/* --- BOTTONI PRO --- */
+input[type="submit"] {
+    width: 100%;
+    background-color: var(--text-white); /* Bottone Bianco su sfondo scuro = Contrasto alto */
+    color: black;
+    padding: 15px;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: transform 0.2s, background-color 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #e0e0e0;
+    transform: translateY(-2px); /* Leggero sollevamento */
+}
+
+/* Footer Link */
+.form-footer {
+    text-align: center;
+    margin-top: 25px;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+}
+.form-footer a {
+    color: var(--accent-red);
+    text-decoration: none;
+    font-weight: bold;
+}
+
+/* --- RESPONSIVE --- */
+@media (max-width: 768px) {
+    .main-header { padding: 0 20px; }
+    .nav-links { display: none; } /* Su mobile nascondiamo il menu per ora o lo semplifichiamo */
+    .logo-container img { height: 35px; } /* Ancora più piccolo su mobile */
+}
+
+
+/* =========================================
+   SEZIONE CORSI E TURNI (ACCORDION CARDS)
+   ========================================= */
+.column-layout {
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.corsi-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.corsi-header h2 {
+    color: #d32f2f;
+    text-transform: uppercase;
+    font-size: 2.2rem;
+    letter-spacing: 2px;
+}
+
+.corsi-header p {
+    color: #b3b3b3;
+    font-size: 1.1rem;
+    margin-top: 5px;
+}
+
+.turni-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 800px; /* Più stretto per sembrare un vero elenco elegante */
+}
+
+/* Stile base della Card */
+.turno-card {
+    background-color: #1e1e1e;
+    border: 1px solid #333;
+    border-left: 5px solid #d32f2f;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    cursor: pointer; /* Fa capire che è cliccabile */
+}
+
+.turno-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(211, 47, 47, 0.2);
+    border-color: #444;
+}
+
+/* Header della Card (Sempre visibile) */
+.turno-header {
+    padding: 20px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #1e1e1e 0%, #252525 100%);
+}
+
+.turno-info h3 {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.turno-info .orario {
+    color: #888;
+    font-size: 0.95rem;
+}
+
+/* Etichette accanto al titolo */
+.badge {
+    background-color: #333;
+    color: #ddd;
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.badge.elite {
+    background-color: #d32f2f;
+    color: white;
+}
+
+/* Freccetta animata */
+.turno-icon {
+    color: #d32f2f;
+    font-size: 1.2rem;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.turno-card.active .turno-icon {
+    transform: rotate(180deg); /* Gira in su quando aperto */
+}
+
+/* Corpo della Card (Nascosto di default con animazione CSS Grid fluida) */
+.turno-content-wrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.turno-card.active .turno-content-wrapper {
+    grid-template-rows: 1fr; /* Si espande dolcemente */
+}
+
+.turno-content {
+    overflow: hidden;
+}
+
+/* Tabelle degli atleti */
+.atleti-table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #1a1a1a;
+    border-top: 1px solid #333;
+}
+
+.atleti-table th, .atleti-table td {
+    padding: 15px 25px;
+    text-align: left;
+    border-bottom: 1px solid #2a2a2a;
+}
+
+.atleti-table th {
+    color: #d32f2f;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.atleti-table td {
+    color: #f1f1f1;
+    font-size: 1rem;
+}
+
+.atleti-table tbody tr:hover {
+    background-color: #222;
+}
+
+.tessera-id {
+    font-family: monospace;
+    color: #aaa;
+    background: #2a2a2a;
+    padding: 3px 8px;
+    border-radius: 4px;
+}
+
+.empty-msg {
+    text-align: center !important;
+    color: #666 !important;
+    font-style: italic;
+    padding: 30px !important;
+}
+
+/* =========================================
+   DASHBOARD HOMEPAGE (Box Area Riservata)
+   ========================================= */
+.welcome-header {
+    text-align: center;
+    margin-bottom: 40px;
+    animation: slideUpFade 0.6s ease-out forwards;
+}
+
+.welcome-header h2 {
+    margin-bottom: 10px;
+}
+
+.text-red {
+    color: var(--accent-red);
+    font-weight: 600;
+}
+
+/* Griglia per le card */
+.dashboard-grid {
+    display: grid;
+    /* Rende la griglia responsiva: i box si adattano allo schermo */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 25px;
+    width: 100%;
+    max-width: 1000px;
+    animation: slideUpFade 0.8s ease-out forwards;
+}
+
+/* Stile base dei box */
+.dash-box {
+    background-color: var(--panel-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 30px 20px;
+    text-align: center;
+    text-decoration: none; /* Rimuove la sottolineatura del link */
+    color: var(--text-white);
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-top: 4px solid var(--border-color); /* Linea spessa sopra, inizialmente grigia */
+}
+
+/* Effetto al passaggio del mouse */
+.dash-box:hover {
+    transform: translateY(-5px); /* Si alza un po' */
+    box-shadow: 0 10px 25px rgba(198, 40, 40, 0.15); /* Ombra rossa leggera */
+    border-top-color: var(--accent-red); /* La linea sopra diventa rossa */
+    background-color: #1e1e1e;
+}
+
+.dash-icon {
+    font-size: 3.5rem;
+    margin-bottom: 15px;
+}
+
+.dash-box h3 {
+    color: var(--text-white);
+    margin-bottom: 10px;
+    font-size: 1.3rem;
+    font-weight: 500;
+}
+
+.dash-box p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+/* Colore speciale per il box di logout al passaggio del mouse */
+.logout-box:hover {
+    border-top-color: #ff5252;
+}
