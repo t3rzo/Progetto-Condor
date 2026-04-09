@@ -42,12 +42,6 @@ $utente = $_SESSION['utente_loggato'];
             <h3>Gestione Profilo</h3>
             <p>Modifica le tue credenziali e aggiorna la password di accesso.</p>
         </a>
-
-        <a href="logout.php" class="dash-box logout-box">
-            <div class="dash-icon">🚪</div>
-            <h3>Esci</h3>
-            <p>Disconnettiti in modo sicuro dalla tua area riservata.</p>
-        </a>
     </div>
 </div>
 
