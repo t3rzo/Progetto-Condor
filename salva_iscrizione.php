@@ -7,7 +7,10 @@ if (isset($_POST['atleti'])) {
 
     foreach ($_POST['atleti'] as $atleta) {
         $atleta_safe = mysqli_real_escape_string($db, $atleta);
-        mysqli_query($db, "INSERT INTO iscrizioni_gare (id_gara, nome_atleta, allenatore) VALUES ('$id_gara', '$atleta_safe', '$allenatore')");
+        
+        // ECCO LA CORREZIONE: usiamo gara_iscrizioni e non iscrizioni_gare
+        mysqli_query($db, "INSERT INTO gara_iscrizioni (id_gara, nome_atleta, allenatore) VALUES ('$id_gara', '$atleta_safe', '$allenatore')");
     }
 }
 header("Location: visualizza_iscritti.php?id_gara=$id_gara");
+?>

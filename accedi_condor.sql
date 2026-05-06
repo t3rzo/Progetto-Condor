@@ -2,8 +2,8 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1
--- Creato il: Apr 09, 2026 alle 11:16
+-- Host: localhost
+-- Creato il: Mag 06, 2026 alle 11:35
 -- Versione del server: 10.4.32-MariaDB
 -- Versione PHP: 8.2.12
 
@@ -92,6 +92,28 @@ INSERT INTO `credenziali` (`id`, `utente`, `password`, `nome`, `cognome`, `data_
 (5, 'amico2', 'ste', 'stepan', 'maksimovic', '2007-03-01', '3275805522', 'stepanmaksyimiv@gmail.com'),
 (6, 'ccc', 'ccc', 'MICHELE', 'CASTALDO', '0206-11-16', '423489820', 'castaldo.michele@itsdallachiesa.edu.it');
 
+-- --------------------------------------------------------
+
+--
+-- Struttura della tabella `gara_iscrizioni`
+--
+
+CREATE TABLE `gara_iscrizioni` (
+  `id` int(11) NOT NULL,
+  `id_gara` int(11) NOT NULL,
+  `nome_atleta` varchar(100) DEFAULT NULL,
+  `allenatore` varchar(100) DEFAULT NULL,
+  `data_iscrizione` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `gara_iscrizioni`
+--
+
+INSERT INTO `gara_iscrizioni` (`id`, `id_gara`, `nome_atleta`, `allenatore`, `data_iscrizione`) VALUES
+(1, 101, 'Allocca Alessandro', 'ertre', '2026-05-06 09:34:14'),
+(2, 101, 'Calvanese Francesco Pio', 'ertre', '2026-05-06 09:34:14');
+
 --
 -- Indici per le tabelle scaricate
 --
@@ -110,6 +132,12 @@ ALTER TABLE `credenziali`
   ADD UNIQUE KEY `utente` (`utente`);
 
 --
+-- Indici per le tabelle `gara_iscrizioni`
+--
+ALTER TABLE `gara_iscrizioni`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- AUTO_INCREMENT per le tabelle scaricate
 --
 
@@ -118,6 +146,12 @@ ALTER TABLE `credenziali`
 --
 ALTER TABLE `credenziali`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT per la tabella `gara_iscrizioni`
+--
+ALTER TABLE `gara_iscrizioni`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

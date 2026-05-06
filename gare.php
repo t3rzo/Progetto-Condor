@@ -45,9 +45,12 @@ $elenco_gare = json_decode($dati_json, true);
                     <p style="margin: 5px 0; color: #ccc;">🥋 <strong>Specialità:</strong> <?php echo htmlspecialchars($gara['specialita']); ?></p>
                 </div>
                 
-                <div class="gara-action">
-                    <a href="iscriviti.php?id_gara=<?php echo $gara['id_gara']; ?>" style="background-color: #d32f2f; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; transition: 0.3s;">
-                        Iscriviti Ora
+                <div class="gara-action" style="display: flex; flex-direction: column; gap: 10px; min-width: 150px;">
+                    <a href="iscriviti.php?id_gara=<?php echo $gara['id_gara']; ?>" style="background-color: #d32f2f; color: white; padding: 10px; text-decoration: none; border-radius: 5px; font-weight: bold; text-align: center; transition: 0.3s;">
+                        Iscrivi Atleti
+                    </a>
+                    <a href="visualizza_iscritti.php?id_gara=<?php echo $gara['id_gara']; ?>" style="border: 1px solid #555; color: #ccc; padding: 8px; text-decoration: none; border-radius: 5px; font-size: 0.9em; text-align: center; transition: 0.3s;">
+                        Visualizza Iscritti
                     </a>
                 </div>
             </div>

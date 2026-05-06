@@ -3,7 +3,7 @@ $db = mysqli_connect("localhost", "root", "", "accedi_condor");
 $id_gara = $_GET['id_gara'];
 
 // Recuperiamo gli iscritti per questa specifica gara
-$query = "SELECT * FROM iscrizioni_gare WHERE id_gara = '$id_gara'";
+$query = "SELECT * FROM gare_iscrizioni WHERE id_gara = '$id_gara'";
 $iscritti = mysqli_query($db, $query);
 ?>
 
