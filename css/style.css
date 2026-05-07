@@ -476,3 +476,71 @@ input[type="submit"]:hover {
 .logout-box:hover {
     border-top-color: #ff5252;
 }
+
+/* Sezione Prossima Gara */
+.next-event-section {
+    background: #111;
+    border-radius: 20px;
+    padding: 30px;
+    margin-top: 50px;
+    border: 1px solid #333;
+}
+
+.event-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 30px;
+}
+
+/* Countdown in grande stile */
+.countdown-box {
+    background: #d32f2f;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-family: monospace;
+    font-size: 1.4em;
+    color: white;
+    box-shadow: 0 0 15px rgba(211, 47, 47, 0.4);
+}
+
+/* Griglia Atleti */
+.athletes-scroll {
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 15px;
+}
+
+/* Card Atleta */
+.athlete-card {
+    min-width: 180px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    padding: 15px;
+    border-radius: 12px;
+    text-align: center;
+    position: relative;
+    transition: 0.3s;
+}
+
+.athlete-card:hover { border-color: #d32f2f; transform: translateY(-5px); }
+
+.belt-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.75em;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+.athlete-name { font-weight: bold; color: white; display: block; }
+.fita-code { font-size: 0.8em; color: #777; margin-top: 5px; display: block; }
+
+/* Personalizzazione cinture (esempi) */
+.belt-nera { background: #000; color: #fff; border: 1px solid #fff; }
+.belt-rossa { background: #d32f2f; color: #fff; }
+.belt-verde { background: #2e7d32; color: #fff; }

@@ -8,10 +8,7 @@ if(!isset($_SESSION['utente_loggato'])) {
 $utente = $_SESSION['utente_loggato'];
 
 // --- MAGIA DELL'API SIMULATA ---
-// 1. Il server "legge" i dati dal file esterno
 $dati_json = file_get_contents('gare.json');
-
-// 2. Li decodifica in un formato leggibile da PHP (un Array)
 $elenco_gare = json_decode($dati_json, true);
 ?>
 
@@ -22,12 +19,23 @@ $elenco_gare = json_decode($dati_json, true);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gare ed Eventi - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
-</head>
+
+    <style>
+        @keyframes fadeInPage {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeInPage 0.8s ease-out;
+        }
+    </style>
+    </head>
 <body>
 
 <?php include 'header.php'; ?>
 
-<div class="page-content column-layout">
+<div class="page-content column-layout fade-in">
     <div class="corsi-header">
         <h2>Gare ed Eventi Ufficiali</h2>
         <p>Ecco l'elenco delle prossime competizioni. Scegli la tua gara e iscriviti!</p>
