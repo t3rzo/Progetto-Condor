@@ -544,3 +544,67 @@ input[type="submit"]:hover {
 .belt-nera { background: #000; color: #fff; border: 1px solid #fff; }
 .belt-rossa { background: #d32f2f; color: #fff; }
 .belt-verde { background: #2e7d32; color: #fff; }
+
+/* Contenitore che forza il "fianco a fianco" */
+.condor-wrapper {
+    display: flex !important; /* Forza il layout orizzontale */
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Gestione Video con Bordo Rosso */
+.condor-video video {
+    display: block;
+    max-height: 420px; /* Impedisce al video di diventare troppo alto */
+    width: auto;
+    border: 4px solid #e74c3c; /* BORDO ROSSO */
+    border-radius: 15px;
+    box-shadow: 0 0 20px rgba(231, 76, 60, 0.5); /* Effetto luce rossa */
+}
+
+/* Gestione Testo */
+.condor-text {
+    flex: 1;
+    color: white;
+    text-align: left;
+}
+
+.condor-text h2 {
+    color: #e74c3c;
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.condor-text p {
+    font-size: 1.1rem;
+    line-height: 1.5;
+}
+
+.quote {
+    margin-top: 20px;
+    font-style: italic;
+    color: #ccc;
+    border-left: 4px solid #e74c3c;
+    padding-left: 15px;
+}
+
+/* Per il cellulare (sotto gli 800px) torna uno sopra l'altro */
+@media (max-width: 800px) {
+    .condor-wrapper {
+        flex-direction: column;
+        text-align: center;
+    }
+    .condor-text {
+        text-align: center;
+    }
+    .condor-video video {
+        max-height: 350px;
+    }
+}

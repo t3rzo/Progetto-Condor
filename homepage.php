@@ -14,14 +14,14 @@ $utente = $_SESSION['utente_loggato'];
     <title>Dashboard - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
     <style>
-        /* Animazione Fade-in */
+  
         @keyframes fadeInPage {
             from { opacity: 0; transform: translateY(15px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .fade-in { animation: fadeInPage 0.8s ease-out; }
 
-        /* Sezione Video + Descrizione */
+ 
         .gym-intro {
             display: flex;
             gap: 30px;
@@ -36,7 +36,6 @@ $utente = $_SESSION['utente_loggato'];
         .text-box { flex: 1; }
         .text-box h2 { color: #d32f2f; margin-top: 0; }
 
-        /* Sezione Countdown e Atleti */
         .live-updates {
             background: linear-gradient(45deg, #d32f2f, #8b0000);
             padding: 20px;
@@ -47,7 +46,6 @@ $utente = $_SESSION['utente_loggato'];
         }
         #timer { font-weight: bold; font-size: 1.5em; letter-spacing: 2px; }
 
-        /* Bacheca Trofei */
         .trophy-wall {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -65,7 +63,6 @@ $utente = $_SESSION['utente_loggato'];
         .trophy-item:hover { transform: translateY(-5px); background: #252525; }
         .trophy-item img { width: 60px; filter: drop-shadow(0 0 5px gold); }
 
-        /* Responsive */
         @media (max-width: 768px) {
             .gym-intro { flex-direction: column; }
         }
@@ -82,16 +79,22 @@ $utente = $_SESSION['utente_loggato'];
         <p>Pronto per l'allenamento di oggi?</p>
     </div>
 
-    <section class="gym-intro">
-        <div class="video-box">
-            <iframe width="50%" height="250" src="" frameborder="0" allowfullscreen></iframe>
+<section class="gym-intro" style="padding: 40px 0; background: #111;">
+    <div class="condor-wrapper">
+        <div class="condor-video">
+            <video controls>
+                <source src="videos/Video Condor.mp4" type="video/mp4">
+                Il tuo browser non supporta il video.
+            </video>
         </div>
-        <div class="text-box">
+
+        <div class="condor-text">
             <h2>ASD Condor</h2>
-            <p>La nostra palestra non è solo un luogo di allenamento, ma una famiglia. Qui forgiate il carattere e la tecnica sotto la guida del maestro Pacifico Laezza.</p>
-            <p><i>"Il sudore di oggi è il successo di domani."</i></p>
+            <p>La nostra palestra non è solo un luogo di allenamento, ma una famiglia. Qui forgiate il carattere e la tecnica sotto la guida del maestro <strong>Pacifico Laezza</strong>.</p>
+            <p class="quote">"Il sudore di oggi è il successo di domani."</p>
         </div>
-    </section>
+    </div>
+</section>
 
     <section class="live-updates">
         <h3>🚀 Prossima Gara tra:</h3>
@@ -142,7 +145,7 @@ $utente = $_SESSION['utente_loggato'];
 </div>
 
 <script>
-    // Semplice Timer per la prossima gara (Esempio: tra 10 giorni)
+
     const countDownDate = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
 
     const x = setInterval(function() {
