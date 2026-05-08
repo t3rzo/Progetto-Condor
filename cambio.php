@@ -1,53 +1,42 @@
 <?php
-session_start();
-$messaggio = "";
+require_once 'utils.php';
 
-// Recuperiamo l'utente dall'URL (es. cambio.php?utente=Mario) o dalla sessione
-$utente_corrente = isset($_GET['utente']) ? $_GET['utente'] : (isset($_SESSION['utente_loggato']) ? $_SESSION['utente_loggato'] : '');
+richiediLogin();
 
-// Se viene premuto il bottone di aggiornamento
-if(isset($_POST['aggiorna'])){
-    $db = mysqli_connect("localhost", "root", "", "accedi_condor");
+$messaggio = '';
+$utente_corrente = utenteCorrente();
+
+if (isset($_POST['aggiorna'])) {
+    $db = connessioneDb();
 
     if (!$db) {
-        $messaggio = "<div style='background:red; color:white; padding:10px; text-align:center;'>❌ ERRORE CONNESSIONE: " . mysqli_connect_error() . "</div>";
+        $messaggio = '<div class="alert alert-error">Connessione al database non riuscita.</div>';
     } else {
-        $utente = mysqli_real_escape_string($db, $_POST['utente']);
-        $vecchia_pass = $_POST['vecchia_pass'];
-        $nuova_pass = $_POST['nuova_pass'];
-        $conferma_pass = $_POST['conferma_pass'];
+        $utente = mysqli_real_escape_string($db, $utente_corrente);
+        $vecchia_pass = $_POST['vecchia_pass'] ?? '';
+        $nuova_pass_originale = $_POST['nuova_pass'] ?? '';
+        $nuova_pass = mysqli_real_escape_string($db, $nuova_pass_originale);
+        $conferma_pass = $_POST['conferma_pass'] ?? '';
 
-        // 1. Controlliamo se la vecchia password è corretta
-        $query_check = "SELECT password FROM credenziali WHERE utente = '$utente'";
+        $query_check = "SELECT password FROM credenziali WHERE utente = '$utente' LIMIT 1";
         $risultato = mysqli_query($db, $query_check);
-        $riga = mysqli_fetch_assoc($risultato);
+        $riga = $risultato ? mysqli_fetch_assoc($risultato) : null;
 
-        if($riga && $riga['password'] === $vecchia_pass) {
-            
-            // 2. Controlliamo se le due nuove password coincidono
-            if($nuova_pass === $conferma_pass) {
-                
-                // 3. Aggiorniamo la password nel database
-                $query_update = "UPDATE credenziali SET password = '$nuova_pass' WHERE utente = '$utente'";
-                if(mysqli_query($db, $query_update)){
-                    $messaggio = "<div style='background:green; color:white; padding:15px; text-align:center; border: 2px solid white;'>
-                                    <h2>✅ PASSWORD AGGIORNATA!</h2>
-                                    <p>La tua password è stata cambiata con successo.</p>
-                                  </div>";
-                } else {
-                    $messaggio = "<div style='background:red; color:white; padding:10px; text-align:center;'>❌ ERRORE MYSQL: " . mysqli_error($db) . "</div>";
-                }
-            } else {
-                $messaggio = "<div style='background:orange; color:black; padding:10px; text-align:center;'>⚠️ Le nuove password non coincidono!</div>";
-            }
+        if (!$riga || $riga['password'] !== $vecchia_pass) {
+            $messaggio = '<div class="alert alert-error">La vecchia password non &egrave; corretta.</div>';
+        } elseif ($nuova_pass_originale !== $conferma_pass) {
+            $messaggio = '<div class="alert alert-warning">Le nuove password non coincidono.</div>';
         } else {
-            $messaggio = "<div style='background:red; color:white; padding:10px; text-align:center;'>❌ La vecchia password è errata!</div>";
+            $query_update = "UPDATE credenziali SET password = '$nuova_pass' WHERE utente = '$utente'";
+            $messaggio = mysqli_query($db, $query_update)
+                ? '<div class="alert alert-success">Password aggiornata correttamente.</div>'
+                : '<div class="alert alert-error">Aggiornamento non riuscito.</div>';
         }
+
         mysqli_close($db);
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -60,39 +49,35 @@ if(isset($_POST['aggiorna'])){
 
 <?php include 'header.php'; ?>
 
-<?php echo $messaggio; ?>
+<main class="page-content">
+    <section class="form-container">
+        <?php echo $messaggio; ?>
+        <h2>Gestione sicurezza</h2>
 
-<div class="page-content">
-    <div class="form-container">
-        <h2>Gestione Sicurezza</h2>
-        
         <form action="cambio.php" method="POST">
-            
-            <input type="hidden" name="utente" value="<?php echo htmlspecialchars($utente_corrente); ?>">
-
             <div class="input-wrapper">
-                <label>Vecchia Password</label>
-                <input type="password" name="vecchia_pass" required />
-            </div>
-            
-            <div class="input-wrapper">
-                <label>Nuova Password</label>
-                <input type="password" name="nuova_pass" required />
+                <label>Vecchia password</label>
+                <input type="password" name="vecchia_pass" required>
             </div>
 
             <div class="input-wrapper">
-                <label>Conferma Nuova Password</label>
-                <input type="password" name="conferma_pass" required />
+                <label>Nuova password</label>
+                <input type="password" name="nuova_pass" required>
             </div>
-            
-            <input type="submit" value="Aggiorna Password" name="aggiorna" />
+
+            <div class="input-wrapper">
+                <label>Conferma nuova password</label>
+                <input type="password" name="conferma_pass" required>
+            </div>
+
+            <input type="submit" value="Aggiorna password" name="aggiorna">
         </form>
 
         <div class="form-footer">
-            <a href="homepage.php">⬅ Torna alla Dashboard</a>
+            <a href="homepage.php">Torna alla dashboard</a>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

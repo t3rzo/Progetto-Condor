@@ -1,12 +1,13 @@
 <?php
-session_start();
-// Se l'utente ha già fatto il login, lo cacciamo via dal form e lo mandiamo in homepage!
-if(isset($_SESSION['utente_loggato'])){
-    header("Location: homepage.php");
+require_once 'utils.php';
+
+avviaSessione();
+
+if (utenteLoggato()) {
+    header('Location: homepage.php');
     exit;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -19,29 +20,29 @@ if(isset($_SESSION['utente_loggato'])){
 
 <?php include 'header.php'; ?>
 
-<div class="page-content">
-    <div class="form-container">
-        <h2>Accesso Area Riservata</h2>
-        
+<main class="page-content">
+    <section class="form-container">
+        <h2>Accesso area riservata</h2>
+
         <form action="controllo.php" method="POST">
             <div class="input-wrapper">
                 <label>Username</label>
-                <input type="text" name="utente" required />
+                <input type="text" name="utente" required>
             </div>
-            
+
             <div class="input-wrapper">
                 <label>Password</label>
-                <input type="password" name="pass" required />
+                <input type="password" name="pass" required>
             </div>
-            
-            <input type="submit" value="Accedi" />
+
+            <input type="submit" value="Accedi">
         </form>
 
         <div class="form-footer">
             Non hai un account? <a href="registra.php">Registrati</a>
         </div>
-    </div>
-</div>
+    </section>
+</main>
 
 </body>
 </html>

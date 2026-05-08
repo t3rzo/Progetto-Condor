@@ -1,40 +1,63 @@
 <?php
-session_start();
-$db = mysqli_connect("localhost", "root", "", "accedi_condor");
+require_once 'utils.php';
 
-$id_gara = $_GET['id_gara'];
-// Prendiamo tutti gli atleti della palestra
-$res = mysqli_query($db, "SELECT nome, cognome FROM atleti_corsi ORDER BY cognome ASC");
+richiediLogin();
+
+$db = connessioneDb();
+$id_gara = (int) ($_GET['id_gara'] ?? 0);
+$atleti = [];
+
+if ($db) {
+    $risultato = mysqli_query($db, "SELECT nome, cognome FROM atleti_corsi ORDER BY cognome ASC");
+
+    if ($risultato) {
+        while ($riga = mysqli_fetch_assoc($risultato)) {
+            $atleti[] = $riga;
+        }
+    }
+
+    mysqli_close($db);
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Iscrivi Atleti</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iscrivi Atleti - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="page-content">
-        <h2>Seleziona Atleti da Iscrivere</h2>
-        <form action="salva_iscrizione.php" method="POST" class="form-container">
-            <input type="hidden" name="id_gara" value="<?php echo $id_gara; ?>">
-            
-            <label>Seleziona i ragazzi:</label>
-            <div style="background: #222; padding: 10px; border-radius: 5px; max-height: 200px; overflow-y: auto;">
-                <?php while($atleta = mysqli_fetch_assoc($res)): 
-                    $nome_completo = $atleta['cognome'] . " " . $atleta['nome']; ?>
-                    <label style="display: block; padding: 5px;">
-                        <input type="checkbox" name="atleti[]" value="<?php echo $nome_completo; ?>"> <?php echo $nome_completo; ?>
+
+<?php include 'header.php'; ?>
+
+<main class="page-content">
+    <section class="form-container">
+        <h2>Seleziona atleti</h2>
+
+        <form action="salva_iscrizione.php" method="POST">
+            <input type="hidden" name="id_gara" value="<?php echo e($id_gara); ?>">
+
+            <label>Atleti disponibili</label>
+            <div class="list-box">
+                <?php foreach ($atleti as $atleta): ?>
+                    <?php $nome_completo = $atleta['cognome'] . ' ' . $atleta['nome']; ?>
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="atleti[]" value="<?php echo e($nome_completo); ?>">
+                        <?php echo e($nome_completo); ?>
                     </label>
-                <?php endwhile; ?>
+                <?php endforeach; ?>
             </div>
 
-            <label style="margin-top: 15px; display: block;">Allenatore Responsabile:</label>
-            <input type="text" name="allenatore" placeholder="Nome dell'istruttore" required>
+            <div class="input-wrapper">
+                <label>Allenatore responsabile</label>
+                <input type="text" name="allenatore" placeholder="Nome dell'istruttore" required>
+            </div>
 
-            <button type="submit" class="btn-red" style="margin-top: 20px;">Conferma Iscrizione</button>
+            <button type="submit" class="btn-red">Conferma iscrizione</button>
         </form>
-    </div>
+    </section>
+</main>
+
 </body>
 </html>

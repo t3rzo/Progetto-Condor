@@ -1,16 +1,21 @@
 <?php
-$db = mysqli_connect("localhost", "root", "", "accedi_condor");
+require_once 'utils.php';
 
-if (isset($_POST['atleti'])) {
-    $id_gara = $_POST['id_gara'];
-    $allenatore = mysqli_real_escape_string($db, $_POST['allenatore']);
+richiediLogin();
+
+$db = connessioneDb();
+$id_gara = (int) ($_POST['id_gara'] ?? 0);
+
+if ($db && $id_gara > 0 && !empty($_POST['atleti'])) {
+    $allenatore = mysqli_real_escape_string($db, $_POST['allenatore'] ?? '');
 
     foreach ($_POST['atleti'] as $atleta) {
         $atleta_safe = mysqli_real_escape_string($db, $atleta);
-        
-        // ECCO LA CORREZIONE: usiamo gara_iscrizioni e non iscrizioni_gare
-        mysqli_query($db, "INSERT INTO gara_iscrizioni (id_gara, nome_atleta, allenatore) VALUES ('$id_gara', '$atleta_safe', '$allenatore')");
+        mysqli_query($db, "INSERT INTO gara_iscrizioni (id_gara, nome_atleta, allenatore) VALUES ($id_gara, '$atleta_safe', '$allenatore')");
     }
+
+    mysqli_close($db);
 }
+
 header("Location: visualizza_iscritti.php?id_gara=$id_gara");
-?>
+exit;

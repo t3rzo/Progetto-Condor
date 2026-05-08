@@ -1,10 +1,8 @@
 <?php
-session_start();
-if(!isset($_SESSION['utente_loggato'])) {
-    header("Location: index.php");
-    exit;
-}
-$utente = $_SESSION['utente_loggato'];
+require_once 'utils.php';
+
+richiediLogin();
+$utente = utenteCorrente();
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -13,159 +11,106 @@ $utente = $_SESSION['utente_loggato'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
-    <style>
-  
-        @keyframes fadeInPage {
-            from { opacity: 0; transform: translateY(15px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .fade-in { animation: fadeInPage 0.8s ease-out; }
-
- 
-        .gym-intro {
-            display: flex;
-            gap: 30px;
-            align-items: center;
-            background: #1a1a1a;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 40px;
-            border: 1px solid #333;
-        }
-        .video-box { flex: 1; border-radius: 10px; overflow: hidden; line-height: 0; }
-        .text-box { flex: 1; }
-        .text-box h2 { color: #d32f2f; margin-top: 0; }
-
-        .live-updates {
-            background: linear-gradient(45deg, #d32f2f, #8b0000);
-            padding: 20px;
-            border-radius: 15px;
-            color: white;
-            margin-bottom: 40px;
-            text-align: center;
-        }
-        #timer { font-weight: bold; font-size: 1.5em; letter-spacing: 2px; }
-
-        .trophy-wall {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 20px;
-            margin-top: 40px;
-            text-align: center;
-        }
-        .trophy-item {
-            background: #1a1a1a;
-            padding: 20px;
-            border-radius: 10px;
-            border-bottom: 3px solid #d32f2f;
-            transition: 0.3s;
-        }
-        .trophy-item:hover { transform: translateY(-5px); background: #252525; }
-        .trophy-item img { width: 60px; filter: drop-shadow(0 0 5px gold); }
-
-        @media (max-width: 768px) {
-            .gym-intro { flex-direction: column; }
-        }
-    </style>
 </head>
 <body>
 
 <?php include 'header.php'; ?>
 
-<div class="page-content column-layout fade-in">
-    
-    <div class="welcome-header" style="text-align: center; margin-bottom: 40px;">
-        <h2>Bentornato, <span class="text-red"><?php echo htmlspecialchars($utente); ?></span>!</h2>
+<main class="page-content column-layout dashboard-page fade-in">
+    <header class="welcome-header">
+        <h2>Bentornato, <span class="text-red"><?php echo e($utente); ?></span>!</h2>
         <p>Pronto per l'allenamento di oggi?</p>
-    </div>
+    </header>
 
-<section class="gym-intro" style="padding: 40px 0; background: #111;">
-    <div class="condor-wrapper">
-        <div class="condor-video">
-            <video controls>
-                <source src="videos/Video Condor.mp4" type="video/mp4">
-                Il tuo browser non supporta il video.
-            </video>
+    <section class="gym-intro">
+        <div class="condor-wrapper">
+            <div class="condor-media">
+                <video class="condor-video" controls preload="metadata">
+                    <source src="videos/Video Condor.mp4" type="video/mp4">
+                    Il tuo browser non supporta il video.
+                </video>
+            </div>
+
+            <div class="condor-text">
+                <h2>ASD Condor</h2>
+                <p>La nostra palestra non &egrave; solo un luogo di allenamento, ma una famiglia. Qui si costruiscono carattere e tecnica sotto la guida del maestro <strong>Pacifico Laezza</strong>.</p>
+                <p class="quote">"Il sudore di oggi &egrave; il successo di domani."</p>
+            </div>
         </div>
-
-        <div class="condor-text">
-            <h2>ASD Condor</h2>
-            <p>La nostra palestra non è solo un luogo di allenamento, ma una famiglia. Qui forgiate il carattere e la tecnica sotto la guida del maestro <strong>Pacifico Laezza</strong>.</p>
-            <p class="quote">"Il sudore di oggi è il successo di domani."</p>
-        </div>
-    </div>
-</section>
-
-    <section class="live-updates">
-        <h3>🚀 Prossima Gara tra:</h3>
-        <div id="timer">Caricamento countdown...</div>
-        <p style="margin-top: 10px; opacity: 0.9;">
-            Atleti pronti: <strong>Marco R., Sofia L., Alessio V.</strong>
-        </p>
     </section>
 
-    <div class="dashboard-grid">
+    <section class="live-updates">
+        <h3>Prossima gara tra:</h3>
+        <div id="timer">Caricamento countdown...</div>
+        <p>Atleti pronti: <strong>Marco R., Sofia L., Alessio V.</strong></p>
+    </section>
+
+    <section class="dashboard-grid" aria-label="Sezioni principali">
         <a href="corsi.php" class="dash-box">
-            <div class="dash-icon">🥋</div>
-            <h3>Corsi e Turni</h3>
+            <div class="dash-icon">C</div>
+            <h3>Corsi e turni</h3>
             <p>Visualizza gli atleti iscritti e gli orari dei vari turni.</p>
         </a>
 
-        <a href="gare.php" class="dash-box"> 
-            <div class="dash-icon">🏆</div>
-            <h3>Gare ed Eventi</h3>
+        <a href="gare.php" class="dash-box">
+            <div class="dash-icon">G</div>
+            <h3>Gare ed eventi</h3>
             <p>Consulta il calendario e iscriviti alle prossime competizioni.</p>
         </a>
 
-        <a href="cambio.php?utente=<?php echo urlencode($utente); ?>" class="dash-box">
-            <div class="dash-icon">⚙️</div>
-            <h3>Gestione Profilo</h3>
-            <p>Modifica le tue credenziali e aggiorna la password.</p>
+        <a href="cambio.php" class="dash-box">
+            <div class="dash-icon">P</div>
+            <h3>Profilo</h3>
+            <p>Modifica le credenziali e aggiorna la password.</p>
         </a>
-    </div>
-
-    <h2 style="text-align: center; margin-top: 60px;">🥇 Bacheca dei Traguardi</h2>
-    <section class="trophy-wall">
-        <div class="trophy-item">
-            <img src="img/trofeo.png" alt="Trofeo"> <h4>Regionali 2024</h4>
-            <p style="font-size: 0.8em; color: #aaa;">1° Posto Squadra</p>
-        </div>
-        <div class="trophy-item">
-            <img src="img/trofeo.png" alt="Trofeo">
-            <h4>Coppa Italia</h4>
-            <p style="font-size: 0.8em; color: #aaa;">Miglior Atleta Junior</p>
-        </div>
-        <div class="trophy-item">
-            <img src="img/trofeo.png" alt="Trofeo">
-            <h4>Trofeo Condor</h4>
-            <p style="font-size: 0.8em; color: #aaa;">Evento Sociale</p>
-        </div>
     </section>
 
-</div>
+    <h2 class="section-title">Bacheca dei traguardi</h2>
+
+    <section class="trophy-wall" aria-label="Traguardi ASD Condor">
+        <article class="trophy-item">
+            <div class="trophy-medal">1</div>
+            <h4>Regionali 2024</h4>
+            <p>1&deg; posto squadra</p>
+        </article>
+
+        <article class="trophy-item">
+            <div class="trophy-medal">2</div>
+            <h4>Coppa Italia</h4>
+            <p>Miglior atleta junior</p>
+        </article>
+
+        <article class="trophy-item">
+            <div class="trophy-medal">3</div>
+            <h4>Trofeo Condor</h4>
+            <p>Evento sociale</p>
+        </article>
+    </section>
+</main>
 
 <script>
+const timer = document.getElementById('timer');
+const targetDate = Date.now() + 10 * 24 * 60 * 60 * 1000;
 
-    const countDownDate = new Date().getTime() + (10 * 24 * 60 * 60 * 1000);
+function updateCountdown() {
+    const distance = targetDate - Date.now();
 
-    const x = setInterval(function() {
-        const now = new Date().getTime();
-        const distance = countDownDate - now;
+    if (distance <= 0) {
+        timer.textContent = 'GARA IN CORSO!';
+        return;
+    }
 
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+    const days = Math.floor(distance / 86400000);
+    const hours = Math.floor((distance % 86400000) / 3600000);
+    const minutes = Math.floor((distance % 3600000) / 60000);
+    const seconds = Math.floor((distance % 60000) / 1000);
 
-        document.getElementById("timer").innerHTML = days + "g " + hours + "o " + minutes + "m " + seconds + "s ";
+    timer.textContent = `${days}g ${hours}o ${minutes}m ${seconds}s`;
+}
 
-        if (distance < 0) {
-            clearInterval(x);
-            document.getElementById("timer").innerHTML = "GARA IN CORSO!";
-        }
-    }, 1000);
+updateCountdown();
+setInterval(updateCountdown, 1000);
 </script>
-
 
 </body>
 </html>

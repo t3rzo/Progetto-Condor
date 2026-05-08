@@ -1,49 +1,74 @@
 <?php
-$db = mysqli_connect("localhost", "root", "", "accedi_condor");
-$id_gara = $_GET['id_gara'];
+require_once 'utils.php';
 
-// CORREZIONE: Recuperiamo gli iscritti da gara_iscrizioni
-$query = "SELECT * FROM gara_iscrizioni WHERE id_gara = '$id_gara'";
-$iscritti = mysqli_query($db, $query);
+richiediLogin();
+
+$db = connessioneDb();
+$id_gara = (int) ($_GET['id_gara'] ?? 0);
+$iscritti = [];
+
+if ($db) {
+    $risultato = mysqli_query($db, "SELECT id, nome_atleta, allenatore FROM gara_iscrizioni WHERE id_gara = $id_gara ORDER BY nome_atleta ASC");
+
+    if ($risultato) {
+        while ($riga = mysqli_fetch_assoc($risultato)) {
+            $iscritti[] = $riga;
+        }
+    }
+
+    mysqli_close($db);
+}
 ?>
-
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Iscritti Gara</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iscritti Gara - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="page-content column-layout" style="max-width: 800px; margin: 0 auto; padding-top: 50px;">
-        <h2>Atleti Iscritti alla Gara #<?php echo htmlspecialchars($id_gara); ?></h2>
-        
-        <table style="width: 100%; border-collapse: collapse; background: #1a1a1a; margin-top: 20px;">
+
+<?php include 'header.php'; ?>
+
+<main class="page-content column-layout animated-page">
+    <header class="corsi-header">
+        <h2>Atleti iscritti alla gara #<?php echo e($id_gara); ?></h2>
+    </header>
+
+    <section class="gare-container">
+        <table class="data-table">
             <thead>
-                <tr style="border-bottom: 2px solid #d32f2f;">
-                    <th style="padding: 10px; text-align: left;">Atleta</th>
-                    <th style="padding: 10px; text-align: left;">Allenatore</th>
-                    <th style="padding: 10px; text-align: center;">Azione</th>
+                <tr>
+                    <th>Atleta</th>
+                    <th>Allenatore</th>
+                    <th>Azione</th>
                 </tr>
             </thead>
             <tbody>
-                <?php while($row = mysqli_fetch_assoc($iscritti)): ?>
-                    <tr style="border-bottom: 1px solid #333;">
-                        <td style="padding: 10px;"><?php echo htmlspecialchars($row['nome_atleta']); ?></td>
-                        <td style="padding: 10px;"><?php echo htmlspecialchars($row['allenatore']); ?></td>
-                        <td style="padding: 10px; text-align: center;">
-                            <a href="annulla_iscrizione.php?id=<?php echo $row['id']; ?>&id_gara=<?php echo $id_gara; ?>" 
-                               onclick="return confirm('Vuoi davvero annullare questa iscrizione?')"
-                               style="color: #d32f2f; text-decoration: none; font-weight: bold;">Annulla</a>
-                        </td>
+                <?php if (empty($iscritti)): ?>
+                    <tr>
+                        <td colspan="3" class="empty-msg">Nessun atleta iscritto a questa gara.</td>
                     </tr>
-                <?php endwhile; ?>
+                <?php else: ?>
+                    <?php foreach ($iscritti as $row): ?>
+                        <tr>
+                            <td><?php echo e($row['nome_atleta']); ?></td>
+                            <td><?php echo e($row['allenatore']); ?></td>
+                            <td>
+                                <a href="annulla_iscrizione.php?id=<?php echo e($row['id']); ?>&id_gara=<?php echo e($id_gara); ?>" onclick="return confirm('Vuoi davvero annullare questa iscrizione?')" class="btn-link text-red">Annulla</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
             </tbody>
         </table>
-        
-        <p style="margin-top: 30px; text-align: center;">
-            <a href="gare.php" style="color: #aaa; text-decoration: none;">&larr; Torna alle gare</a>
-        </p>
+    </section>
+
+    <div class="page-back">
+        <a href="gare.php" class="btn-link">Torna alle gare</a>
     </div>
+</main>
+
 </body>
 </html>

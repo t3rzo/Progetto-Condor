@@ -1,42 +1,63 @@
 <?php
-session_start(); // FONDAMENTALE: Inizia la sessione per "ricordare" l'utente
+require_once 'utils.php';
 
-$db=mysqli_connect("localhost","root","","accedi_condor") or die ("impossibile connettersi al database".mysqli_connect_error());
+avviaSessione();
 
-$comando="SELECT * FROM credenziali";
-$comando1=mysqli_query($db,$comando);
-$nome=$_POST['utente'];
-$pass=$_POST['pass'];
-$flag=false;
+$utente = trim($_POST['utente'] ?? '');
+$pass = $_POST['pass'] ?? '';
+$titolo = 'Accesso non riuscito';
+$messaggio = 'Username o password non validi.';
+$link = 'index.php';
+$linkTesto = 'Torna al login';
 
-while($riga1=mysqli_fetch_array($comando1)){
-    if($nome == $riga1['utente'] && $pass == $riga1['password']){
-         // Credenziali corrette! 
-         // 1. Salviamo il nome utente in una "memoria" del browser (la sessione)
-         $_SESSION['utente_loggato'] = $nome;
-         
-         // 2. REINDIRIZZIAMO l'utente alla nuova pagina grafica
-         header("Location: homepage.php");
-         exit; // Ferma l'esecuzione della pagina
-         
-    } else if ($nome == $riga1['utente'] && $pass != $riga1['password']){
-        // Manteniamo il tuo messaggio di errore, ma un po' più pulito
-        echo "<div style='text-align:center; margin-top:50px; font-family:sans-serif;'>";
-        echo "<h2>Password sbagliata.</h2>";
-        echo "<a href='index.php' style='color:red;'>Torna indietro e riprova</a>";
-        echo "</div>";
-        $flag=true;
-        break; // Trovato l'utente ma password errata, fermiamo il ciclo
+if ($utente !== '' && $pass !== '') {
+    $db = connessioneDb();
+
+    if ($db) {
+        $utenteDb = mysqli_real_escape_string($db, $utente);
+        $query = "SELECT utente, password FROM credenziali WHERE utente = '$utenteDb' LIMIT 1";
+        $risultato = mysqli_query($db, $query);
+        $riga = $risultato ? mysqli_fetch_assoc($risultato) : null;
+
+        if ($riga && $riga['password'] === $pass) {
+            $_SESSION['utente_loggato'] = $riga['utente'];
+            header('Location: homepage.php');
+            exit;
+        }
+
+        if (!$riga) {
+            $messaggio = 'Utente non esistente.';
+            $link = 'registra.php';
+            $linkTesto = 'Registrati ora';
+        }
+
+        mysqli_close($db);
+    } else {
+        $messaggio = 'Connessione al database non riuscita.';
     }
 }
-
-// Se il ciclo finisce e non ha trovato l'utente, e non è loggato
-if(!$flag && !isset($_SESSION['utente_loggato'])){ 
-    echo "<div style='text-align:center; margin-top:50px; font-family:sans-serif;'>";
-    echo "<h2>Utente non esistente.</h2>";
-    echo "<a href='registra.php' style='color:red;'>Registrati ora</a>";
-    echo "</div>";
-}
-
-mysqli_close($db);
 ?>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ASD Condor - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<?php include 'header.php'; ?>
+
+<main class="page-content">
+    <section class="form-container access-card">
+        <h2><?php echo e($titolo); ?></h2>
+        <p><?php echo e($messaggio); ?></p>
+        <div class="access-actions">
+            <a href="<?php echo e($link); ?>" class="btn btn-primary"><?php echo e($linkTesto); ?></a>
+        </div>
+    </section>
+</main>
+
+</body>
+</html>
