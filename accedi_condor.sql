@@ -95,13 +95,41 @@ INSERT INTO `credenziali` (`id`, `utente`, `password`, `nome`, `cognome`, `data_
 -- --------------------------------------------------------
 
 --
+-- Struttura della tabella `gare`
+--
+
+CREATE TABLE `gare` (
+  `id_gara` int(11) NOT NULL,
+  `titolo` varchar(200) NOT NULL,
+  `data` varchar(50) NOT NULL,
+  `luogo` varchar(150) NOT NULL,
+  `specialita` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dump dei dati per la tabella `gare`
+--
+
+INSERT INTO `gare` (`id_gara`, `titolo`, `data`, `luogo`, `specialita`) VALUES
+(101, 'Campionati Forme e Freestyle - Taekwondo e Parataekwondo #101', '11 - 12 Aprile 2026', 'Palazzetto dello Sport, Giugliano', 'FITA'),
+(102, 'Tashkent 2026 World Taekwondo Junior Championships #102', '12 - 17 Aprile 2026', 'Olympic City, Tashkent, Uzbekistan', 'Internazionale'),
+(103, 'European Seniors Championships 2026 #103', '12 - 14 Maggio 2026', 'BMW Park Venue', 'Internazionale'),
+(104, 'Rome 2026 World Taekwondo Grand Prix Series I #104', '04 - 07 Giugno 2026', 'Foro Italico - Roma', 'Internazionale'),
+(105, 'Virtual Taekwondo Roma Open 2026 #105', '04 Giugno 2026', 'Foro Italico - Roma', 'Internazionale'),
+(106, 'Kim e Liù 2026 - Taekwondo to the Future! #106', '05 - 07 Giugno 2026', 'Foro Italico - Roma', 'Internazionale'),
+(107, 'Campionati Italiani Taekwondo Senior Cinture Nere #107', '08 Giugno 2026', 'Foro Italico - Roma', 'FITA'),
+(108, '3° San Marino Open #108', '27 - 28 Giugno 2026', 'Multieventi Sport Domus - Serravalle (RSM)', 'Internazionale');
+
+-- --------------------------------------------------------
+
+--
 -- Struttura della tabella `gara_iscrizioni`
 --
 
 CREATE TABLE `gara_iscrizioni` (
   `id` int(11) NOT NULL,
   `id_gara` int(11) NOT NULL,
-  `nome_atleta` varchar(100) DEFAULT NULL,
+  `numero_tesseramento` varchar(50) NOT NULL,
   `allenatore` varchar(100) DEFAULT NULL,
   `data_iscrizione` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -110,9 +138,9 @@ CREATE TABLE `gara_iscrizioni` (
 -- Dump dei dati per la tabella `gara_iscrizioni`
 --
 
-INSERT INTO `gara_iscrizioni` (`id`, `id_gara`, `nome_atleta`, `allenatore`, `data_iscrizione`) VALUES
-(1, 101, 'Allocca Alessandro', 'ertre', '2026-05-06 09:34:14'),
-(2, 101, 'Calvanese Francesco Pio', 'ertre', '2026-05-06 09:34:14');
+INSERT INTO `gara_iscrizioni` (`id`, `id_gara`, `numero_tesseramento`, `allenatore`, `data_iscrizione`) VALUES
+(1, 101, '194332', 'ertre', '2026-05-06 09:34:14'),
+(2, 101, '172614', 'ertre', '2026-05-06 09:34:14');
 
 --
 -- Indici per le tabelle scaricate
@@ -132,10 +160,25 @@ ALTER TABLE `credenziali`
   ADD UNIQUE KEY `utente` (`utente`);
 
 --
+-- Indici per le tabelle `gare`
+--
+ALTER TABLE `gare`
+  ADD PRIMARY KEY (`id_gara`);
+
+--
 -- Indici per le tabelle `gara_iscrizioni`
 --
 ALTER TABLE `gara_iscrizioni`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `id_gara` (`id_gara`),
+  ADD KEY `numero_tesseramento` (`numero_tesseramento`);
+
+--
+-- Vincoli per le tabelle `gara_iscrizioni`
+--
+ALTER TABLE `gara_iscrizioni`
+  ADD CONSTRAINT `gara_iscrizioni_ibfk_1` FOREIGN KEY (`id_gara`) REFERENCES `gare` (`id_gara`) ON DELETE CASCADE,
+  ADD CONSTRAINT `gara_iscrizioni_ibfk_2` FOREIGN KEY (`numero_tesseramento`) REFERENCES `atleti_corsi` (`numero_tesseramento`) ON DELETE RESTRICT;
 
 --
 -- AUTO_INCREMENT per le tabelle scaricate

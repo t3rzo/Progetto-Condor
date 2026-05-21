@@ -3,8 +3,20 @@ require_once 'utils.php';
 
 richiediLogin();
 
-$dati_json = file_get_contents('gare.json');
-$elenco_gare = json_decode($dati_json, true) ?: [];
+$db = connessioneDb();
+$elenco_gare = [];
+
+if ($db) {
+    $risultato = mysqli_query($db, "SELECT id_gara, titolo, `data`, luogo, specialita FROM gare ORDER BY id_gara ASC");
+
+    if ($risultato) {
+        while ($riga = mysqli_fetch_assoc($risultato)) {
+            $elenco_gare[] = $riga;
+        }
+    }
+
+    mysqli_close($db);
+}
 ?>
 <!DOCTYPE html>
 <html lang="it">

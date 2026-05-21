@@ -8,7 +8,7 @@ $id_gara = (int) ($_GET['id_gara'] ?? 0);
 $iscritti = [];
 
 if ($db) {
-    $risultato = mysqli_query($db, "SELECT id, nome_atleta, allenatore FROM gara_iscrizioni WHERE id_gara = $id_gara ORDER BY nome_atleta ASC");
+    $risultato = mysqli_query($db, "SELECT gi.id, ac.nome, ac.cognome, gi.allenatore FROM gara_iscrizioni gi LEFT JOIN atleti_corsi ac ON gi.numero_tesseramento = ac.numero_tesseramento WHERE gi.id_gara = $id_gara ORDER BY ac.cognome ASC, ac.nome ASC");
 
     if ($risultato) {
         while ($riga = mysqli_fetch_assoc($risultato)) {
@@ -53,7 +53,7 @@ if ($db) {
                 <?php else: ?>
                     <?php foreach ($iscritti as $row): ?>
                         <tr>
-                            <td><?php echo e($row['nome_atleta']); ?></td>
+                            <td><?php echo e(trim($row['cognome'] . ' ' . $row['nome'])); ?></td>
                             <td><?php echo e($row['allenatore']); ?></td>
                             <td>
                                 <a href="annulla_iscrizione.php?id=<?php echo e($row['id']); ?>&id_gara=<?php echo e($id_gara); ?>" onclick="return confirm('Vuoi davvero annullare questa iscrizione?')" class="btn-link text-red">Annulla</a>

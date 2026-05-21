@@ -3,6 +3,113 @@ require_once 'utils.php';
 
 richiediLogin();
 $utente = utenteCorrente();
+
+function condorPeriodoGara($dataGara) {
+    $mesi = [
+        'gennaio' => '01',
+        'febbraio' => '02',
+        'marzo' => '03',
+        'aprile' => '04',
+        'maggio' => '05',
+        'giugno' => '06',
+        'luglio' => '07',
+        'agosto' => '08',
+        'settembre' => '09',
+        'ottobre' => '10',
+        'novembre' => '11',
+        'dicembre' => '12'
+    ];
+
+    if (!preg_match('/(\d{1,2})(?:\s*-\s*(\d{1,2}))?\s+([a-z]+)\s+(\d{4})/i', strtolower($dataGara), $parti)) {
+        return null;
+    }
+
+    $mese = $mesi[$parti[3]] ?? null;
+    if (!$mese) {
+        return null;
+    }
+
+    $giornoInizio = (int) $parti[1];
+    $giornoFine = isset($parti[2]) && $parti[2] !== '' ? (int) $parti[2] : $giornoInizio;
+    $anno = (int) $parti[4];
+
+    return [
+        'inizio' => DateTime::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $anno, (int) $mese, $giornoInizio)),
+        'fine' => DateTime::createFromFormat('!Y-m-d', sprintf('%04d-%02d-%02d', $anno, (int) $mese, $giornoFine))
+    ];
+}
+
+function condorProssimaGara($gare) {
+    $oggi = new DateTime('today');
+    $prossima = null;
+
+    foreach ($gare as $gara) {
+        $periodo = condorPeriodoGara($gara['data'] ?? '');
+
+        if (!$periodo || !$periodo['inizio'] || !$periodo['fine'] || $periodo['fine'] < $oggi) {
+            continue;
+        }
+
+        if (!$prossima || $periodo['inizio'] < $prossima['data_inizio']) {
+            $gara['data_inizio'] = $periodo['inizio'];
+            $gara['data_fine'] = $periodo['fine'];
+            $prossima = $gara;
+        }
+    }
+
+    return $prossima;
+}
+
+function condorAtletiIscrittiGara($db, $idGara) {
+    $atleti = [];
+    $idGara = (int) $idGara;
+    $query = "
+        SELECT DISTINCT ac.cognome, ac.nome, CONCAT(ac.cognome, ' ', ac.nome) AS nome_atleta
+        FROM gara_iscrizioni gi
+        INNER JOIN atleti_corsi ac ON gi.numero_tesseramento = ac.numero_tesseramento
+        WHERE gi.id_gara = $idGara
+        ORDER BY ac.cognome ASC, ac.nome ASC
+    ";
+    $risultato = mysqli_query($db, $query);
+
+    if ($risultato) {
+        while ($riga = mysqli_fetch_assoc($risultato)) {
+            $atleti[] = $riga['nome_atleta'];
+        }
+    }
+
+    return $atleti;
+}
+
+$db = connessioneDb();
+$elencoGare = [];
+$prossimaGara = null;
+$atletiPronti = [];
+
+if ($db) {
+    $risultato = mysqli_query($db, "SELECT id_gara, titolo, `data`, luogo, specialita FROM gare");
+
+    if ($risultato) {
+        while ($riga = mysqli_fetch_assoc($risultato)) {
+            $elencoGare[] = $riga;
+        }
+    }
+
+    mysqli_close($db);
+}
+
+$prossimaGara = condorProssimaGara($elencoGare);
+
+if ($prossimaGara) {
+    $db = connessioneDb();
+
+    if ($db) {
+        $atletiPronti = condorAtletiIscrittiGara($db, $prossimaGara['id_gara']);
+        mysqli_close($db);
+    }
+}
+
+$targetCountdown = $prossimaGara ? $prossimaGara['data_inizio']->format('c') : '';
 ?>
 <!DOCTYPE html>
 <html lang="it">
@@ -41,8 +148,19 @@ $utente = utenteCorrente();
 
     <section class="live-updates">
         <h3>Prossima gara tra:</h3>
-        <div id="timer">Caricamento countdown...</div>
-        <p>Atleti pronti: <strong>Marco R., Sofia L., Alessio V.</strong></p>
+        <?php if ($prossimaGara): ?>
+            <p><strong><?php echo e($prossimaGara['titolo']); ?></strong></p>
+            <div id="timer">Caricamento countdown...</div>
+            <p>
+                Atleti pronti:
+                <strong>
+                    <?php echo empty($atletiPronti) ? 'Nessun atleta iscritto a questa gara.' : e(implode(', ', $atletiPronti)); ?>
+                </strong>
+            </p>
+        <?php else: ?>
+            <div id="timer">Nessuna gara programmata.</div>
+            <p>Atleti pronti: <strong>Nessuna gara selezionata.</strong></p>
+        <?php endif; ?>
     </section>
 
     <section class="dashboard-grid" aria-label="Sezioni principali">
@@ -90,9 +208,13 @@ $utente = utenteCorrente();
 
 <script>
 const timer = document.getElementById('timer');
-const targetDate = Date.now() + 10 * 24 * 60 * 60 * 1000;
+const targetDate = <?php echo $targetCountdown ? 'new Date(' . json_encode($targetCountdown) . ').getTime()' : 'null'; ?>;
 
 function updateCountdown() {
+    if (!targetDate) {
+        return;
+    }
+
     const distance = targetDate - Date.now();
 
     if (distance <= 0) {
@@ -108,8 +230,10 @@ function updateCountdown() {
     timer.textContent = `${days}g ${hours}o ${minutes}m ${seconds}s`;
 }
 
-updateCountdown();
-setInterval(updateCountdown, 1000);
+if (targetDate) {
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+}
 </script>
 
 </body>

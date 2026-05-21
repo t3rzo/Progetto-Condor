@@ -8,7 +8,7 @@ $id_gara = (int) ($_GET['id_gara'] ?? 0);
 $atleti = [];
 
 if ($db) {
-    $risultato = mysqli_query($db, "SELECT nome, cognome FROM atleti_corsi ORDER BY cognome ASC");
+    $risultato = mysqli_query($db, "SELECT nome, cognome, numero_tesseramento FROM atleti_corsi ORDER BY cognome ASC");
 
     if ($risultato) {
         while ($riga = mysqli_fetch_assoc($risultato)) {
@@ -43,7 +43,7 @@ if ($db) {
                 <?php foreach ($atleti as $atleta): ?>
                     <?php $nome_completo = $atleta['cognome'] . ' ' . $atleta['nome']; ?>
                     <label class="checkbox-label">
-                        <input type="checkbox" name="atleti[]" value="<?php echo e($nome_completo); ?>">
+                        <input type="checkbox" name="atleti[]" value="<?php echo e($atleta['numero_tesseramento']); ?>">
                         <?php echo e($nome_completo); ?>
                     </label>
                 <?php endforeach; ?>
