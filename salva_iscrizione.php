@@ -11,7 +11,9 @@ if ($db && $id_gara > 0 && !empty($_POST['atleti'])) {
 
     foreach ($_POST['atleti'] as $numero_tesseramento) {
         $tess_safe = mysqli_real_escape_string($db, $numero_tesseramento);
-        mysqli_query($db, "INSERT INTO gara_iscrizioni (id_gara, numero_tesseramento, allenatore) VALUES ($id_gara, '$tess_safe', '$allenatore')");
+        $query = "INSERT INTO gara_iscrizioni (id_gara, numero_tesseramento, allenatore) "
+               . "VALUES ($id_gara, '$tess_safe', '$allenatore')";
+        mysqli_query($db, $query);
     }
 
     mysqli_close($db);

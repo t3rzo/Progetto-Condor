@@ -8,7 +8,8 @@ $id_gara = (int) ($_GET['id_gara'] ?? 0);
 $atleti = [];
 
 if ($db) {
-    $risultato = mysqli_query($db, "SELECT nome, cognome, numero_tesseramento FROM atleti_corsi ORDER BY cognome ASC");
+    $query = "SELECT nome, cognome, numero_tesseramento FROM atleti ORDER BY cognome ASC";
+    $risultato = mysqli_query($db, $query);
 
     if ($risultato) {
         while ($riga = mysqli_fetch_assoc($risultato)) {

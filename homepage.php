@@ -63,18 +63,15 @@ function condorProssimaGara($gare) {
 function condorAtletiIscrittiGara($db, $idGara) {
     $atleti = [];
     $idGara = (int) $idGara;
-    $query = "
-        SELECT DISTINCT ac.cognome, ac.nome, CONCAT(ac.cognome, ' ', ac.nome) AS nome_atleta
-        FROM gara_iscrizioni gi
-        INNER JOIN atleti_corsi ac ON gi.numero_tesseramento = ac.numero_tesseramento
-        WHERE gi.id_gara = $idGara
-        ORDER BY ac.cognome ASC, ac.nome ASC
-    ";
+    $query = "SELECT DISTINCT a.cognome, a.nome FROM gara_iscrizioni gi "
+           . "INNER JOIN atleti a ON gi.numero_tesseramento = a.numero_tesseramento "
+           . "WHERE gi.id_gara = $idGara ORDER BY a.cognome ASC, a.nome ASC";
     $risultato = mysqli_query($db, $query);
 
     if ($risultato) {
         while ($riga = mysqli_fetch_assoc($risultato)) {
-            $atleti[] = $riga['nome_atleta'];
+            $nome = $riga['cognome'] . ' ' . $riga['nome'];
+            $atleti[] = $nome;
         }
     }
 

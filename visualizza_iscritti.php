@@ -8,7 +8,7 @@ $id_gara = (int) ($_GET['id_gara'] ?? 0);
 $iscritti = [];
 
 if ($db) {
-    $risultato = mysqli_query($db, "SELECT gi.id, ac.nome, ac.cognome, gi.allenatore FROM gara_iscrizioni gi LEFT JOIN atleti_corsi ac ON gi.numero_tesseramento = ac.numero_tesseramento WHERE gi.id_gara = $id_gara ORDER BY ac.cognome ASC, ac.nome ASC");
+    $risultato = mysqli_query($db, "SELECT gi.id, a.nome, a.cognome, gi.allenatore FROM gara_iscrizioni gi LEFT JOIN atleti a ON gi.numero_tesseramento = a.numero_tesseramento WHERE gi.id_gara = $id_gara ORDER BY a.cognome ASC, a.nome ASC");
 
     if ($risultato) {
         while ($riga = mysqli_fetch_assoc($risultato)) {
