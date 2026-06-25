@@ -116,9 +116,7 @@ $targetCountdown = $prossimaGara ? $prossimaGara['data_inizio']->format('c') : '
     <title>Dashboard - ASD Condor</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
-
-<?php include 'header.php'; ?>
+<body> <?php include 'header.php'; ?>
 
 <main class="page-content column-layout dashboard-page fade-in">
     <header class="welcome-header">

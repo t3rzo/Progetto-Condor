@@ -1,5 +1,6 @@
-<?php
+﻿<?php
 require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/chatbot/bootstrap.php';
 
 avviaSessione();
 $is_logged = utenteLoggato();
@@ -33,3 +34,8 @@ $utente = utenteCorrente();
         </ul>
     </nav>
 </header>
+
+<?php
+// Widget chatbot Condor. Caricato su TUTTE le pagine (inclusa la login).
+condorChatbotIncludi();
+?>
